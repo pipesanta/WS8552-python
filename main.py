@@ -13,7 +13,7 @@ ports = serial.tools.list_ports.comports()
 def findReaderPort():
     for port, desc, hwid in sorted(ports):
         print("{}: {} [{}]".format(port, desc, hwid))
-        if("PL2303HXA" in desc):            
+        if("USB-Serial Controller" in desc):            
             return port
 
 Ws8552 = WS8552_FingerPrintReader(str(findReaderPort()), 19200)
@@ -80,12 +80,18 @@ while not(option in ["q", "Q", "quit", "QUIT", "d", "daemon"]):
     elif(option == "4"):
         userId = int(raw_input("user id as INT in range [0, 65534]: "))
         privilege =  int(raw_input("user privileges in range [1,3]: "))
-        for i in range(1, 4):                     
-            response = False
+        for i in range(1, 4):
+	    response = False
             while not(response):
-                print("INTENTO NUMERO {}".format(i))   
+                print("INTENTO NUMERO {}".format(i))
                 response = Ws8552.addFingerprint(i, userId, privilege)
-        
+            if(response=="ACK_USER_EXIST"):
+                print("USER ALREADY EXIST")
+                break
+        if(response=="ACK_FAIL"):
+            print("TH COMMAND FAILED")
+        if(response==True):
+           print("USER WITH ID: {} AND PRIVILEGE {} HAS BEEN CREATED".format(userId,privilege))
     elif(option == "5"):
         userId = int(raw_input("user id to REMOVE in range [0, 65534]:\n"))
         print("RESPONSE ==> {}".format(Ws8552.deleteUser(userId)))

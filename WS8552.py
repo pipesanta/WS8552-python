@@ -161,7 +161,12 @@ class WS8552_FingerPrintReader(object):
             self.printOnDebug("DATA RESPONSE IS EMPTY")
             return False
         ackByte = ord(response[4])
-        if(len(response) == 8 and ackByte == 0x01 ): self.printOnDebug("FAILED ACK")
+        if(len(response) == 8 and ackByte == 0x01 ): 
+            self.printOnDebug("FAILED ACK")
+            return "ACK_FAIL"
+        if(len(response) == 8 and ackByte == 0x06 ):
+            self.printOnDebug("FAILED ACK")
+            return "ACK_USER_EXIST"
         if(len(response) == 8 and ackByte == 0x00 ): validResponse = True
         return validResponse
 
