@@ -9,24 +9,17 @@ ports = serial.tools.list_ports.comports()
 # GREEN - TX
 # WHITE - RX 
 
-# for windows
-def findReaderPort():
+def findReaderPort(deviceName):
     for port, desc, hwid in sorted(ports):
         print("{}: {} [{}]".format(port, desc, hwid))
-        if("USB-Serial Controller" in desc):            
+        if(deviceName in desc):            
             return port
 
-Ws8552 = WS8552_FingerPrintReader(str(findReaderPort()), 19200)
+Ws8552 = WS8552_FingerPrintReader(str(findReaderPort("USB-Serial Controller")), 19200)
 Ws8552.debug = False
 Ws8552.info()
 
-print("############## INICIO DEL PROGRAMA ########################")
-# bData= [0x66, 0x65, 0x6C, 0x69, 0x70, 0x65]
-# bDataStr = []
-# for i in bData:
-#     bDataStr.append( chr(i) )
-# print(bDataStr)
-
+print("############## SCRIPT STARTED ########################")
 option=""
 while not(option in ["q", "Q", "quit", "QUIT", "d", "daemon"]):
     option = raw_input("which comamnd do you want to run? (\"help\" for options)\n")
